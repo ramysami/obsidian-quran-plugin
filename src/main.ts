@@ -14,16 +14,18 @@ interface ApiResponse {
 
 export default class QuranInserter extends Plugin {
 	async onload() {
-		this.addRibbonIcon('book', 'Insert quran verse', () => {
+		this.addRibbonIcon('book', 'Insert Quran verse', () => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				const editor = view.editor;
+				// Focus the editor to ensure getCursor() is accurate
+				editor.focus();
 				const cursor = editor.getCursor();
 				new VerseInputModal(this.app, (result) => {
 					void this.insertVerse(result, editor, cursor);
 				}).open();
 			} else {
-				new Notice('Please open a Markdown file first');
+				new Notice('Please open a Markdown file first.');
 			}
 		});
 
@@ -31,6 +33,8 @@ export default class QuranInserter extends Plugin {
 			id: 'insert-verse',
 			name: 'Insert verse',
 			editorCallback: (editor: Editor) => {
+				// Focus the editor to ensure getCursor() is accurate
+				editor.focus();
 				const cursor = editor.getCursor();
 				new VerseInputModal(this.app, (result) => {
 					void this.insertVerse(result, editor, cursor);
@@ -39,7 +43,7 @@ export default class QuranInserter extends Plugin {
 		});
 	}
 
-	async insertVerse(input: string, editor: Editor, cursor: EditorPosition) {
+	async insertVerse(input: string, editor: Editor, capturedCursor: EditorPosition) {
 		const match = input.match(/^(\d+):(\d+)$/);
 		if (!match) {
 			new Notice('Invalid format. Please use surah:verse (e.g., 2:255).');
@@ -64,31 +68,37 @@ export default class QuranInserter extends Plugin {
 				return;
 			}
 			
-			const surahName = data.surah.name;
+			const surahName = data.surah.name.trim();
 			const verseNumber = data.numberInSurah;
-			const text = data.text;
+			const text = data.text.trim();
 
-			const formattedText = `${surahName} (${verseNumber})\n${text}\n`;
-			
-			// Fix for the jumping/flashing:
-			// 1. Focus the editor first to ensure it knows its current state
+			// Use the captured line content to determine insertion style
+			const lineContent = editor.getLine(capturedCursor.line);
+			// Aggressively check for empty/whitespace-only lines
+			const isLineEmpty = lineContent.trim() === '';
+
+			if (isLineEmpty) {
+				// Format: Surah (Number)\nText\n (Strictly NO leading newline)
+				const formattedText = `${surahName} (${verseNumber})\n${text}\n`;
+				
+				// Replace the entire current empty line with the verse
+				editor.replaceRange(formattedText, { line: capturedCursor.line, ch: 0 }, { line: capturedCursor.line, ch: lineContent.length });
+				
+				// Move cursor to the new empty line after the text
+				editor.setCursor({ line: capturedCursor.line + 2, ch: 0 });
+			} else {
+				// If the line has text, we insert BELOW it.
+				const formattedText = `\n${surahName} (${verseNumber})\n${text}\n`;
+				
+				// Insert at the very end of the current line
+				editor.replaceRange(formattedText, { line: capturedCursor.line, ch: lineContent.length });
+				
+				// Move cursor to the new empty line after the text
+				editor.setCursor({ line: capturedCursor.line + 3, ch: 0 });
+			}
+
 			editor.focus();
 			
-			// 2. Use replaceRange to insert at the precisely saved location
-			editor.replaceRange(formattedText, cursor);
-			
-			// 3. Calculate new cursor position safely (fixing the build error)
-			const lines = formattedText.split('\n');
-			const lastLine = lines[lines.length - 1];
-			// lastLine will never be undefined because split() always returns at least one element
-			// but we can check it to satisfy TypeScript
-			if (lastLine !== undefined) {
-				const newPos = {
-					line: cursor.line + lines.length - 1,
-					ch: lastLine.length
-				};
-				editor.setCursor(newPos);
-			}
 		} catch {
 			new Notice('Failed to fetch the verse. Please check your connection or input.');
 		}
@@ -97,6 +107,7 @@ export default class QuranInserter extends Plugin {
 
 class VerseInputModal extends Modal {
 	result = '';
+	submitted = false;
 	onSubmit: (result: string) => void;
 
 	constructor(app: App, onSubmit: (result: string) => void) {
@@ -106,7 +117,7 @@ class VerseInputModal extends Modal {
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.createEl('h2', { text: 'Insert quran verse' });
+		contentEl.createEl('h2', { text: 'Insert Quran verse' });
 
 		new Setting(contentEl)
 			.setName('Verse reference')
@@ -119,9 +130,13 @@ class VerseInputModal extends Modal {
 				
 				text.inputEl.addEventListener('keydown', (e) => {
 					if (e.key === 'Enter') {
-						const value = this.result;
-						this.close();
-						this.onSubmit(value);
+						e.preventDefault();
+						if (!this.submitted) {
+							this.submitted = true;
+							const value = this.result;
+							this.close();
+							this.onSubmit(value);
+						}
 					}
 				});
 
@@ -135,9 +150,12 @@ class VerseInputModal extends Modal {
 					.setButtonText('Insert')
 					.setCta()
 					.onClick(() => {
-						const value = this.result;
-						this.close();
-						this.onSubmit(value);
+						if (!this.submitted) {
+							this.submitted = true;
+							const value = this.result;
+							this.close();
+							this.onSubmit(value);
+						}
 					})
 			);
 	}

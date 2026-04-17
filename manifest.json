@@ -1,9 +1,9 @@
 {
 	"id": "quran-inserter",
-	"name": "Quran Inserter",
+	"name": "Quran inserter",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Insert Quran verses into the editor by specifying the Surah and Ayah number.",
+	"description": "Insert Quran verses into the editor by specifying the surah and ayah number.",
 	"author": "Ramy",
 	"authorUrl": "https://github.com/ramy",
 	"isDesktopOnly": false
