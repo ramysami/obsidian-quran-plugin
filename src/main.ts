@@ -68,20 +68,27 @@ export default class QuranInserter extends Plugin {
 			const verseNumber = data.numberInSurah;
 			const text = data.text;
 
-			// Format text without the requested {{ }}
 			const formattedText = `${surahName} (${verseNumber})\n${text}\n`;
 			
-			// Using replaceRange with the saved cursor position ensures precise placement
+			// Fix for the jumping/flashing:
+			// 1. Focus the editor first to ensure it knows its current state
+			editor.focus();
+			
+			// 2. Use replaceRange to insert at the precisely saved location
 			editor.replaceRange(formattedText, cursor);
 			
-			// Move the cursor after the inserted text for better user experience
+			// 3. Calculate new cursor position safely (fixing the build error)
 			const lines = formattedText.split('\n');
-			const newPos = {
-				line: cursor.line + lines.length - 1,
-				ch: lines[lines.length - 1].length
-			};
-			editor.setCursor(newPos);
-			editor.focus();
+			const lastLine = lines[lines.length - 1];
+			// lastLine will never be undefined because split() always returns at least one element
+			// but we can check it to satisfy TypeScript
+			if (lastLine !== undefined) {
+				const newPos = {
+					line: cursor.line + lines.length - 1,
+					ch: lastLine.length
+				};
+				editor.setCursor(newPos);
+			}
 		} catch {
 			new Notice('Failed to fetch the verse. Please check your connection or input.');
 		}
