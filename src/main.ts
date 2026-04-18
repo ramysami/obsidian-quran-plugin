@@ -13,8 +13,8 @@ interface ApiResponse {
 }
 
 export default class QuranInserter extends Plugin {
-	async onload() {
-		this.addRibbonIcon('book', 'Insert Quran verse', () => {
+	onload() {
+		this.addRibbonIcon('book', 'Insert verse', () => {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			if (view) {
 				const editor = view.editor;
@@ -117,7 +117,7 @@ class VerseInputModal extends Modal {
 
 	onOpen() {
 		const { contentEl } = this;
-		contentEl.createEl('h2', { text: 'Insert Quran verse' });
+		contentEl.createEl('h2', { text: 'Insert verse' });
 
 		new Setting(contentEl)
 			.setName('Verse reference')
