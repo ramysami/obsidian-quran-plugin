@@ -1,6 +1,6 @@
-# Obsidian Quran Plugin
+# Obsidian Quran Inserter Plugin
 
-Obsidian Quran Plugin allows you to quickly fetch and insert Quranic verses directly into your Markdown notes. Using the [Al Quran Cloud API](https://alquran.cloud/api), it provides a seamless way to reference the Quran within your personal knowledge base.
+An Obsidian plugin that allows you to quickly fetch and insert Quranic verses directly into your Markdown notes using the [Al Quran Cloud API](https://alquran.cloud/api).
 
 ## Features
 
@@ -27,7 +27,7 @@ Obsidian Quran Plugin allows you to quickly fetch and insert Quranic verses dire
 *Pending addition to the Obsidian Community Plugins list.*
 
 ### Manual Installation
-1. Download `main.js`, `manifest.json` from the latest [release](https://github.com/ramysami/obsidian-quran-plugin/releases/latest).
+1. Download `main.js`, `manifest.json` & `style.css` from the latest [release](https://github.com/ramysami/obsidian-quran-plugin/releases/latest).
 2. Create a folder named `quran-inserter` in your vault's `.obsidian/plugins/` directory.
 3. Move the downloaded files into that folder.
 4. Reload Obsidian and enable the plugin in **Settings > Community plugins**.
@@ -38,7 +38,7 @@ If you want to build the plugin yourself:
 
 1. Clone this repository.
 2. Run `npm install` to install dependencies.
-3. Run `npm run dev` to start the build process in watch mode.
+3. Run `npm run dev` to start the build process in watch mode or `npm run build` to build the plugin.
 
 ## Planned features
 - [ ] Insert tafsir/translation.
