@@ -5,10 +5,8 @@ Obsidian Quran Plugin allows you to quickly fetch and insert Quranic verses dire
 ## Features
 
 - **Quick Insert**: Search for any verse using the standard `surah:verse` format (e.g., `2:255` for Ayat al-Kursi).
-- **Ribbon Icon**: Access the insertion modal with a single click from the sidebar.
 - **Command Palette Support**: Trigger the "Insert verse" command using `Ctrl/Cmd + P`.
 - **Hotkey Support**: Trigger the "Insert verse" command using a hotkey.
-- **Automatic Formatting**: Inserts the Surah name, verse number, and Arabic text with clean formatting.
 - **Smart Placement**: Inserts text at your current cursor position, handling line breaks automatically.
 
 ## Showcase
@@ -26,10 +24,10 @@ Obsidian Quran Plugin allows you to quickly fetch and insert Quranic verses dire
 ## Installation
 
 ### From Community Plugins (Recommended)
-*Pending submission to the Obsidian Community Plugins list.*
+*Pending addition to the Obsidian Community Plugins list.*
 
 ### Manual Installation
-1. Download `main.js`, `manifest.json` from the latest [release](https://github.com/your-repo/obsidian-quran-plugin/releases).
+1. Download `main.js`, `manifest.json` from the latest [release](https://github.com/ramysami/obsidian-quran-plugin/releases/latest).
 2. Create a folder named `quran-inserter` in your vault's `.obsidian/plugins/` directory.
 3. Move the downloaded files into that folder.
 4. Reload Obsidian and enable the plugin in **Settings > Community plugins**.
@@ -42,6 +40,12 @@ If you want to build the plugin yourself:
 2. Run `npm install` to install dependencies.
 3. Run `npm run dev` to start the build process in watch mode.
 
+## Planned features
+- Insert tafsir/translation.
+- Insert multiple verses.
+- Multiple Styles (callouts).
+- Link to the verse on Quran.com
+- Settings page.
 ---
 
 *Note: This plugin requires an active internet connection to fetch verses from the Al Quran Cloud API.*
