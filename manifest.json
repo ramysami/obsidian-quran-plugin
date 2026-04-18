@@ -1,7 +1,7 @@
 {
 	"id": "quran-inserter",
 	"name": "Quran inserter",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Insert Quran verses into the editor by specifying the surah and ayah number.",
 	"author": "Ramy Samy",
