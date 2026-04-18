@@ -78,8 +78,8 @@ export default class QuranInserter extends Plugin {
 			const isLineEmpty = lineContent.trim() === '';
 
 			if (isLineEmpty) {
-				// Format: Surah (Number)\nText\n (Strictly NO leading newline)
-				const formattedText = `${surahName} [(${verseNumber})](https://quran.com/ar/${input})\n${text}\n`;
+				// Format: > [!info] Surah [(Number)](link)\n> Text\n
+				const formattedText = `> [!info] ${surahName} [(${verseNumber})](https://quran.com/ar/${input})\n> ${text}\n`;
 				
 				// Replace the entire current empty line with the verse
 				editor.replaceRange(formattedText, { line: capturedCursor.line, ch: 0 }, { line: capturedCursor.line, ch: lineContent.length });
@@ -88,7 +88,7 @@ export default class QuranInserter extends Plugin {
 				editor.setCursor({ line: capturedCursor.line + 2, ch: 0 });
 			} else {
 				// If the line has text, we insert BELOW it.
-				const formattedText = `\n${surahName} [(${verseNumber})](https://quran.com/ar/${input})\n${text}\n`;
+				const formattedText = `\n> [!info] ${surahName} [(${verseNumber})](https://quran.com/ar/${input})\n> ${text}\n`;
 				
 				// Insert at the very end of the current line
 				editor.replaceRange(formattedText, { line: capturedCursor.line, ch: lineContent.length });

@@ -44,7 +44,6 @@ If you want to build the plugin yourself:
 - [ ] Insert tafsir/translation.
 - [ ] Insert multiple verses.
 - [x] Link to the verse on Quran.com.
-- [ ] Multiple Styles (callouts).
 - [ ] Settings page.
 ---
 
