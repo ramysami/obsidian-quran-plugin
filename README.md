@@ -41,11 +41,11 @@ If you want to build the plugin yourself:
 3. Run `npm run dev` to start the build process in watch mode.
 
 ## Planned features
-- Insert tafsir/translation.
-- Insert multiple verses.
-- Multiple Styles (callouts).
-- Link to the verse on Quran.com
-- Settings page.
+- [ ] Insert tafsir/translation.
+- [ ] Insert multiple verses.
+- [x] Link to the verse on Quran.com.
+- [ ] Multiple Styles (callouts).
+- [ ] Settings page.
 ---
 
 *Note: This plugin requires an active internet connection to fetch verses from the Al Quran Cloud API.*
