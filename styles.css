@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
+
 /*
 
 This CSS file will be included with your plugin, and
@@ -6,3 +8,26 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+
+.quran-verse {
+    font-family: 'Amiri Quran', serif;
+    font-size: calc(var(--font-text-size) * 1.2);
+    line-height: 2;
+    text-align: right;
+    direction: rtl;
+    
+    /* Callout-like styling */
+    --callout-color: var(--callout-info);
+    background-color: rgba(var(--callout-color), 0.1);
+    border: var(--callout-border-width) solid rgba(var(--callout-color), var(--callout-border-opacity));
+    border-top: 3px solid rgb(var(--callout-color));
+    border-radius: var(--callout-radius);
+    padding: var(--callout-padding);
+    padding-top: calc(var(--callout-padding) * .8);
+    margin: var(--size-4-4) 0;
+}
+
+.quran-verse a {
+    font-family: var(--font-interface);
+    font-size: var(--font-text-size);
+}
