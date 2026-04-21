@@ -78,14 +78,16 @@ jobs:
           git add package.json package-lock.json manifest.json versions.json
           git commit -m "chore: bump version to $VERSION [skip ci]"
           
-          # Push changes back to the branch
-          BRANCH=$(git branch -a --contains ${{ github.ref_name }} | grep -v "remotes/origin/HEAD" | head -n 1 | sed 's/.*remotes\/origin\///' | sed 's/[* ]//g')
+          # Find the branch that contains this tag
+          BRANCH=$(git branch -r --contains ${{ github.ref_name }} | grep -v "origin/HEAD" | head -n 1 | sed 's/origin\///' | xargs)
           if [ -z "$BRANCH" ]; then BRANCH="main"; fi
-          git push origin HEAD:$BRANCH
+          
+          # Push changes back to the branch using a fully qualified refname
+          git push origin HEAD:refs/heads/$BRANCH
           
           # Force move the tag to the new commit
           git tag -f ${{ github.ref_name }}
-          git push origin ${{ github.ref_name }} -f
+          git push origin ${{ github.ref_name }} --force
 
       - name: Install dependencies
         run: npm ci
