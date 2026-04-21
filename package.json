@@ -1,7 +1,8 @@
 {
 	"name": "quran-inserter",
-	"version": "1.2.1",
-	"description": "Insert Quran verses into the editor by specifying the Surah and Ayah number.",	"main": "main.js",
+	"version": "1.2.2",
+	"description": "Insert Quran verses into the editor by specifying the Surah and Ayah number.",
+	"main": "main.js",
 	"type": "module",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
