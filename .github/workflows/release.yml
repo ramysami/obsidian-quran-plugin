@@ -1,0 +1,107 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24.x"
+          cache: "npm"
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          TAG=${{ github.ref_name }}
+          VERSION=${TAG#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update versions
+        id: version_bump
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          node -e "
+            const fs = require('fs');
+            let updated = false;
+
+            // Update package.json
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+            if (pkg.version !== '$VERSION') {
+              pkg.version = '$VERSION';
+              fs.writeFileSync('package.json', JSON.stringify(pkg, null, '\t') + '\n');
+              updated = true;
+            }
+
+            // Update manifest.json
+            const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf8'));
+            if (manifest.version !== '$VERSION') {
+              manifest.version = '$VERSION';
+              fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, '\t') + '\n');
+              updated = true;
+            }
+
+            // Update versions.json
+            const versions = JSON.parse(fs.readFileSync('versions.json', 'utf8'));
+            if (!versions['$VERSION']) {
+              versions['$VERSION'] = manifest.minAppVersion;
+              fs.writeFileSync('versions.json', JSON.stringify(versions, null, '\t') + '\n');
+              updated = true;
+            }
+
+            if (updated) console.log('UPDATED=true');
+          " >> $GITHUB_ENV
+
+      - name: Commit and move tag
+        if: env.UPDATED == 'true'
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Update package-lock.json
+          npm install --package-lock-only
+          
+          git add package.json package-lock.json manifest.json versions.json
+          git commit -m "chore: bump version to $VERSION [skip ci]"
+          
+          # Push changes back to the branch
+          BRANCH=$(git branch -a --contains ${{ github.ref_name }} | grep -v "remotes/origin/HEAD" | head -n 1 | sed 's/.*remotes\/origin\///' | sed 's/[* ]//g')
+          if [ -z "$BRANCH" ]; then BRANCH="main"; fi
+          git push origin HEAD:$BRANCH
+          
+          # Force move the tag to the new commit
+          git tag -f ${{ github.ref_name }}
+          git push origin ${{ github.ref_name }} -f
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            main.js
+            manifest.json
+            styles.css
+          generate_release_notes: true
+          tag_name: ${{ github.ref_name }}
