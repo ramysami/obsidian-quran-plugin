@@ -26,6 +26,14 @@ An Obsidian plugin that allows you to quickly fetch and insert Quranic verses di
 ### From Community Plugins (Recommended)
 *Pending addition to the Obsidian Community Plugins list.*
 
+### From BRAT (Beta Reviewer's Auto-update Tool)
+1. Install the [BRAT](https://github.com/TfTHacker/obsidian42-brat) plugin from the Community Plugins gallery.
+2. Open BRAT settings: **Settings > Community plugins > BRAT**.
+3. Click **Add Beta plugin**.
+4. Paste the repository URL: `https://github.com/ramysami/obsidian-quran-plugin`
+5. Click **Add Plugin**.
+6. Enable the plugin in **Settings > Community plugins**.
+
 ### Manual Installation
 1. Download `main.js`, `manifest.json` & `style.css` from the latest [release](https://github.com/ramysami/obsidian-quran-plugin/releases/latest).
 2. Create a folder named `quran-inserter` in your vault's `.obsidian/plugins/` directory.
